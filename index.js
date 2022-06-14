@@ -3,8 +3,6 @@ const inquirer = require('inquirer');
 const db = require('./db/connection')
 
 
-
-
 const starterPrompt = {
     type: 'list',
     name: 'action',
@@ -42,8 +40,6 @@ const addRolePrompt = [
 
 ]
 
-
-
 const addEmployeePrompt = [
 
   {
@@ -57,8 +53,6 @@ const addEmployeePrompt = [
   {
     name: 'role_id',
     message: `What is the employee's title?`,
-    type: 'list',
-    choices
   },
   {
     name: 'manager',
@@ -99,14 +93,27 @@ const viewAllEmployees = ()=> {
 
 const addDepartment = ()=> {
 // before writing query, we need inquirer to gather info on new department
-
-
+inquirer.prompt(addDepartmentPrompt)
+.then(results => {
+  console.log(results);
+  db.query('INSERT INTO department SET ?', {name: results.department_name}).then(results => {
+    console.log("THE DEPARTMENT WAS ADDED")
+    setTimeout(start, 5000)
+  })
+})
 }
 
 
 const addRole = ()=> {
-
-
+  // TODO: .MAP FOR DEPARTMENT
+  inquirer.prompt(addRolePrompt)
+.then(results => {
+  console.log(results);
+  db.query('INSERT INTO role SET ?', {title: results.role_name, salary: results.role_salary, department_id: results.role_department}).then(results => {
+    console.log("THE ROLE WAS ADDED")
+    setTimeout(start, 5000)
+  })
+})
 }
 
 
@@ -115,41 +122,17 @@ const addEmployee = ()=> {
 // we need all the current role ids, to allow user to choose a role_id that is in the role table
 // we need all the current employee ids, to choose a manager_id
 
+// TODO: have to work on this
+// .MAP FOR THE EMPLOYEES WHERE THE MANAGER ID IS NULL
+// .MAP FOR THE ROLE
+
 db.query('SELECT id, title FROM role').then(results => {
   console.table(results);
   // Convert results to an array of choices for inquirer prompt
 
-  const choices = results.map(role => {
-    return {
-      name: role.title,
-      value: role.id
-    }
-  });
+
+
  
-  console.log("CHOICES MADE FOR INQUIRER PROMPT ---", choices)
-
-  const addEmployeePrompt = [
-
-    {
-      name: 'first_name',
-      message: 'What is the first name?'
-    },
-    {
-      name: 'last_name',
-      message: 'What is the last name?'
-    },
-    {
-      name: 'role_id',
-      message: `What is the employee's title?`,
-      type: 'list',
-      choices
-    },
-    {
-      name: 'manager',
-      message: 'Who is the manager?'
-    },
-  
-  ]
 
   inquirer.prompt(addEmployeePrompt)
   .then(results => {
@@ -160,12 +143,43 @@ db.query('SELECT id, title FROM role').then(results => {
 }
 
 
+const updateEmployee = ()=> {
 
+  db.query('SELECT * FROM employee').then(results => {
+    console.log(results);
 
+    const employeeArray = results.map(employee => {
+      return {name: employee.first_name +' '+ employee.last_name, value: employee.id}
+    })
+    db.query('SELECT * FROM role').then(results => {
+      console.log(results)
 
-
-
-
+      const roleArray = results.map(role => {
+        return {name: role.title, value: role.id}
+      })
+      inquirer.prompt([
+        {
+          name: 'selectedEmployee',
+          message: 'What employee do you want to update?',
+          type: 'list',
+          choices: employeeArray
+        },
+        {
+          name: 'selectedRole',
+          message: 'What role do you want to update?',
+          type: 'list',
+          choices: roleArray
+        }
+      ]).then(results => {
+        console.log(results)
+        db.query('UPDATE employee SET role_id =? WHERE id=?',[results.selectedRole, results.selectedEmployee]).then(results => {
+          console.log('UPDATED')
+          setTimeout(start, 5000)
+        })
+      })
+    })
+  })
+}
 
 
 
@@ -179,6 +193,13 @@ function start(){
           return viewAllRoles();
           case 'View all employees':
             return viewAllEmployees();
+            case 'Add a department':
+            return addDepartment();
+            case 'Add a role':
+            return addRole(); 
+            case 'Update an employee role':
+              return updateEmployee();
+            
       
     }
     
