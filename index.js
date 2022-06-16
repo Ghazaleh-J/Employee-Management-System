@@ -67,7 +67,7 @@ const viewAllDepartments = ()=> {
   // make a call to the db & show all departments
   db.query('SELECT * FROM department').then(results => {
     console.log('----------- DEPARTMENTS -----------')
-    console.log(results)
+    console.table(results)
     console.log('----------- DEPARTMENTS -----------')
     setTimeout(start, 5000)
   })
@@ -76,7 +76,7 @@ const viewAllDepartments = ()=> {
 const viewAllRoles = ()=> {
   db.query('SELECT * FROM role').then(results => {
     console.log('----------- Roles -----------')
-    console.log(results)
+    console.table(results)
     console.log('----------- Roles -----------')
     setTimeout(start, 5000)
   })
@@ -85,7 +85,7 @@ const viewAllRoles = ()=> {
 const viewAllEmployees = ()=> {
   db.query('SELECT * FROM employee').then(results => {
     console.log('----------- Employees -----------')
-    console.log(results)
+    console.table(results)
     console.log('----------- Employees -----------')
     setTimeout(start, 5000)
   })
@@ -97,7 +97,7 @@ inquirer.prompt(addDepartmentPrompt)
 .then(results => {
   console.log(results);
   db.query('INSERT INTO department SET ?', {name: results.department_name}).then(results => {
-    console.log("THE DEPARTMENT WAS ADDED")
+    console.log("THE DEPARTMENT HAS BEEN ADDED TO THE DATABASE")
     setTimeout(start, 5000)
   })
 })
@@ -110,7 +110,7 @@ const addRole = ()=> {
 .then(results => {
   console.log(results);
   db.query('INSERT INTO role SET ?', {title: results.role_name, salary: results.role_salary, department_id: results.role_department}).then(results => {
-    console.log("THE ROLE WAS ADDED")
+    console.log("THE ROLE HAS BEEN ADDED TO THE DATABASE")
     setTimeout(start, 5000)
   })
 })
@@ -160,13 +160,13 @@ const updateEmployee = ()=> {
       inquirer.prompt([
         {
           name: 'selectedEmployee',
-          message: 'What employee do you want to update?',
+          message: 'Which employee would you like to update?',
           type: 'list',
           choices: employeeArray
         },
         {
           name: 'selectedRole',
-          message: 'What role do you want to update?',
+          message: "What is the employee's new title?",
           type: 'list',
           choices: roleArray
         }
