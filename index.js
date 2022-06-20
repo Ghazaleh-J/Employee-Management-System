@@ -4,9 +4,9 @@ const db = require('./db/connection')
 
 
 const starterPrompt = {
-    type: 'list',
-    name: 'action',
-    message: 'Hello, welcome to the employee management system, What would you like to do?',
+  name: 'action',
+  message: 'Hello, welcome to the employee management system, What would you like to do?',
+  type: 'list',
     choices: [
       'View all departments', 
       'View all roles', 
@@ -30,8 +30,9 @@ const viewAllDepartments = ()=> {
 }
 
 // make a call to the db & show all the roles
+// TO DO: Join
 const viewAllRoles = ()=> {
-  db.query('SELECT * FROM role').then(results => {
+  db.query('SELECT title as Job_Title, role.id as Role_ID, department.name as Department, salary FROM role LEFT JOIN department ON role.department_id=department.id').then(results => {
     console.log('----------- Roles -----------')
     console.table(results)
     console.log('----------- Roles -----------')
@@ -41,7 +42,7 @@ const viewAllRoles = ()=> {
 
 // make a call to the db & show all employees
 const viewAllEmployees = ()=> {
-  db.query('SELECT * FROM employee').then(results => {
+  db.query(`SELECT employee.id as Employee_Id, CONCAT(employee.first_name, ' ', employee.last_name) as Name, title as Role, department.name as Department, salary, CONCAT(e2.first_name, ' ', e2.last_name) as Manager FROM employee LEFT JOIN role ON employee.role_id=role.id LEFT JOIN department ON role.department_id=department.id LEFT JOIN employee e2 ON employee.manager_id=e2.id`).then(results => {
     console.log('----------- Employees -----------')
     console.table(results)
     console.log('----------- Employees -----------')
