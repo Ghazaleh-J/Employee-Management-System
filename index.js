@@ -30,7 +30,6 @@ const viewAllDepartments = ()=> {
 }
 
 // make a call to the db & show all the roles
-// TO DO: Join
 const viewAllRoles = ()=> {
   db.query('SELECT title as Job_Title, role.id as Role_ID, department.name as Department, salary FROM role LEFT JOIN department ON role.department_id=department.id').then(results => {
     console.log('----------- Roles -----------')
