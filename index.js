@@ -1,4 +1,4 @@
-// const connection = require('./connection');
+// Import Modules
 const inquirer = require('inquirer');
 const db = require('./db/connection')
 
@@ -18,16 +18,8 @@ const starterPrompt = {
     ]
 }
 
-const addDepartmentPrompt = {
-    name: 'department_name',
-    message: 'What is the department name you want to add?',
-  }
-
-
-
-
+// make a call to the db & show all departments
 const viewAllDepartments = ()=> {
-  // make a call to the db & show all departments
   db.query('SELECT * FROM department').then(results => {
     console.log('----------- DEPARTMENTS -----------')
     console.table(results)
@@ -36,6 +28,7 @@ const viewAllDepartments = ()=> {
   })
 }
 
+// make a call to the db & show all the roles
 const viewAllRoles = ()=> {
   db.query('SELECT * FROM role').then(results => {
     console.log('----------- Roles -----------')
@@ -45,6 +38,7 @@ const viewAllRoles = ()=> {
   })
 }
 
+// make a call to the db & show all employees
 const viewAllEmployees = ()=> {
   db.query('SELECT * FROM employee').then(results => {
     console.log('----------- Employees -----------')
@@ -56,21 +50,23 @@ const viewAllEmployees = ()=> {
 
 const addDepartment = ()=> {
 // before writing query, we need inquirer to gather info on new department
-inquirer.prompt(addDepartmentPrompt)
+inquirer.prompt({
+  name: 'department_name',
+  message: 'What is the department name you want to add?',
+})
 .then(results => {
   console.log(results);
   db.query('INSERT INTO department SET ?', {name: results.department_name}).then(results => {
     console.log("THE DEPARTMENT HAS BEEN ADDED TO THE DATABASE")
     setTimeout(start, 5000)
   })
-})
+ })
 }
 
-
 const addRole = ()=> {
-  // TODO: .MAP FOR DEPARTMENT
   db.query('SELECT * FROM department').then(results => {
     console.log(results)
+    // Convert results to an array of choices for inquirer prompt
     const departmentChoices = results.map(department => {
       return {name: department.name, value: department.id}
     })
@@ -100,22 +96,18 @@ const addRole = ()=> {
  })
 }
 
-
 const addEmployee = ()=> {
-// before writing query, we need inquirer to gather info on new employee
 // we need all the current role ids, to allow user to choose a role_id that is in the role table
-// we need all the current employee ids, to choose a manager_id
- // Convert results to an array of choices for inquirer prompt
-
   db.query('SELECT * FROM role').then(results => {
     console.log(results)
-
+    // Convert results to an array of choices for inquirer prompt
     const roleChoices = results.map(role => {
       return {name: role.title, value: role.id}
     })
+    // we need all the current employee ids, to choose a manager_id
     db.query('SELECT * FROM employee').then(results => {
       console.log(results);
-    
+    // Convert results to an array of choices for inquirer prompt
       const managerChoices = results.map(manager => {
         return {name: manager.first_name +' '+ manager.last_name, value: manager.id}
       })
@@ -152,22 +144,16 @@ const addEmployee = ()=> {
  })
 }
   
-
-
-
-
-
 const updateEmployee = ()=> {
-
   db.query('SELECT * FROM employee').then(results => {
     console.log(results);
-
+// Convert results to an array of choices for inquirer prompt
     const employeeArray = results.map(employee => {
       return {name: employee.first_name +' '+ employee.last_name, value: employee.id}
     })
     db.query('SELECT * FROM role').then(results => {
       console.log(results)
-
+// Convert results to an array of choices for inquirer prompt
       const roleArray = results.map(role => {
         return {name: role.title, value: role.id}
       })
@@ -195,8 +181,6 @@ const updateEmployee = ()=> {
   })
 }
 
-
-
 function start(){
   inquirer.prompt(starterPrompt)
   .then((answers) => {
@@ -219,10 +203,10 @@ function start(){
   })
   .catch((error) => {
     if (error.isTtyError) {
-      // Prompt couldn't be rendered in the current environment
-    } else {
-      // Something else went wrong
-    }
+      console.error("Prompt couldn't be rendered in the current environment")
+    }else {
+      console.error("Something else went wrong")
+  }
   });
 }
 
