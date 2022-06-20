@@ -23,43 +23,6 @@ const addDepartmentPrompt = {
     message: 'What is the department name you want to add?',
   }
 
-const addRolePrompt = [
-
-  {
-    name: 'role_name',
-    message: 'What role you want to add?'
-  },
-  {
-    name: 'role_salary',
-    message: 'What is the salary for this role?'
-  },
-  {
-    name: 'role_department',
-    message: 'What is the department for this role?'
-  }
-
-]
-
-const addEmployeePrompt = [
-
-  {
-    name: 'first_name',
-    message: 'What is the first name?'
-  },
-  {
-    name: 'last_name',
-    message: 'What is the last name?'
-  },
-  {
-    name: 'role_id',
-    message: `What is the employee's title?`,
-  },
-  {
-    name: 'manager',
-    message: 'Who is the manager?'
-  },
-
-]
 
 
 
@@ -106,14 +69,35 @@ inquirer.prompt(addDepartmentPrompt)
 
 const addRole = ()=> {
   // TODO: .MAP FOR DEPARTMENT
-  inquirer.prompt(addRolePrompt)
+  db.query('SELECT * FROM department').then(results => {
+    console.log(results)
+    const departmentChoices = results.map(department => {
+      return {name: department.name, value: department.id}
+    })
+  inquirer.prompt([
+    {
+      name: 'role_name',
+      message: 'What role you want to add?'
+    },
+    {
+      name: 'role_salary',
+      message: 'What is the salary for this role?'
+    },
+    {
+      name: 'role_department',
+      message: 'What is the department for this role?',
+      type: 'list',
+      choices: departmentChoices
+    }
+  ])
 .then(results => {
   console.log(results);
   db.query('INSERT INTO role SET ?', {title: results.role_name, salary: results.role_salary, department_id: results.role_department}).then(results => {
     console.log("THE ROLE HAS BEEN ADDED TO THE DATABASE")
     setTimeout(start, 5000)
+   })
   })
-})
+ })
 }
 
 
@@ -123,21 +107,51 @@ const addEmployee = ()=> {
 // we need all the current employee ids, to choose a manager_id
  // Convert results to an array of choices for inquirer prompt
 
-// TODO: have to work on this
-// .MAP FOR THE EMPLOYEES WHERE THE MANAGER ID IS NULL
-// .MAP FOR THE ROLE
+  db.query('SELECT * FROM role').then(results => {
+    console.log(results)
 
-
-
-  inquirer.prompt(addEmployeePrompt)
+    const roleChoices = results.map(role => {
+      return {name: role.title, value: role.id}
+    })
+    db.query('SELECT * FROM employee').then(results => {
+      console.log(results);
+    
+      const managerChoices = results.map(manager => {
+        return {name: manager.first_name +' '+ manager.last_name, value: manager.id}
+      })
+  inquirer.prompt([
+    {
+      name: 'first_name',
+      message: 'What is the first name?'
+    },
+    {
+      name: 'last_name',
+      message: 'What is the last name?'
+    },
+    {
+      name: 'role_id',
+      message: `What is the employee's title?`,
+      type: 'list',
+      choices: roleChoices
+    },
+    {
+      name: 'manager',
+      message: 'Who is the manager?',
+      type: 'list',
+      choices: managerChoices
+    }
+  ])
   .then(results => {
     console.log("RESULTS ---", results);
     db.query('INSERT INTO employee SET ?', {first_name: results.first_name, last_name: results.last_name, role_id: results.role_id, manager_id: results.manager}).then(results => {
       console.log("THE NEW EMPLOYEE HAS BEEN ADDED TO THE DATABASE")
       setTimeout(start, 5000)
     })
+   })
   })
+ })
 }
+  
 
 
 
