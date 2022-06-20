@@ -121,26 +121,26 @@ const addEmployee = ()=> {
 // before writing query, we need inquirer to gather info on new employee
 // we need all the current role ids, to allow user to choose a role_id that is in the role table
 // we need all the current employee ids, to choose a manager_id
+ // Convert results to an array of choices for inquirer prompt
 
 // TODO: have to work on this
 // .MAP FOR THE EMPLOYEES WHERE THE MANAGER ID IS NULL
 // .MAP FOR THE ROLE
 
-db.query('SELECT id, title FROM role').then(results => {
-  console.table(results);
-  // Convert results to an array of choices for inquirer prompt
 
-
-
- 
 
   inquirer.prompt(addEmployeePrompt)
   .then(results => {
-    console.log("RESULTS ---", results)
+    console.log("RESULTS ---", results);
+    db.query('INSERT INTO employee SET ?', {first_name: results.first_name, last_name: results.last_name, role_id: results.role_id, manager_id: results.manager}).then(results => {
+      console.log("THE NEW EMPLOYEE HAS BEEN ADDED TO THE DATABASE")
+      setTimeout(start, 5000)
+    })
   })
-})
-
 }
+
+
+
 
 
 const updateEmployee = ()=> {
@@ -189,20 +189,19 @@ function start(){
     switch (answers.action) {
       case 'View all departments':
         return viewAllDepartments();
-        case 'View all roles':
+         case 'View all roles':
           return viewAllRoles();
-          case 'View all employees':
+           case 'View all employees':
             return viewAllEmployees();
-            case 'Add a department':
-            return addDepartment();
-            case 'Add a role':
-            return addRole(); 
-            case 'Update an employee role':
-              return updateEmployee();
-            
-      
+             case 'Add a department':
+              return addDepartment();
+               case 'Add a role':
+                return addRole();
+                 case 'Add an employee':
+                  return addEmployee(); 
+                   case 'Update an employee role':
+                    return updateEmployee();   
     }
-    
   })
   .catch((error) => {
     if (error.isTtyError) {
