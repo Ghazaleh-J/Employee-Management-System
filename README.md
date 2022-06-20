@@ -24,6 +24,15 @@ Developers frequently have to create interfaces that allow non-developers to eas
 * By choosing to update an employee role, you're prompted to select an employee to update and their new role and this information is updated in the database 
 
 
+## Installation
+
+* Copy the repository to your system
+* Load schema.sql and seeds.sql by MYSQL command line or MYSQL Workbench
+* on connection.js, enter your MYSQL user name & password
+* npm install
+* node index.js
+
+
 ## Link:
 
-[Video Demo](pending)
+[Video Demo](https://drive.google.com/file/d/16J3CRu0T3zjjFzNIAPw9xcwEvByiC6m2/view)
