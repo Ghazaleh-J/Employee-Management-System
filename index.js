@@ -14,7 +14,8 @@ const starterPrompt = {
       'Add a department', 
       'Add a role', 
       'Add an employee', 
-      'Update an employee role'
+      'Update an employee role',
+      'Exit'
     ]
 }
 
@@ -198,7 +199,10 @@ function start(){
                  case 'Add an employee':
                   return addEmployee(); 
                    case 'Update an employee role':
-                    return updateEmployee();   
+                    return updateEmployee();
+                     case 'Exit':
+                      console.log(`Goodbye!`);
+                      process.exit(1);               
     }
   })
   .catch((error) => {
