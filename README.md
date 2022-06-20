@@ -28,7 +28,7 @@ Developers frequently have to create interfaces that allow non-developers to eas
 
 * Copy the repository to your system
 * Load schema.sql and seeds.sql by MYSQL command line or MYSQL Workbench
-* on connection.js, enter your MYSQL user name & password
+* On connection.js, enter your MYSQL user name & password
 * npm install
 * node index.js
 
