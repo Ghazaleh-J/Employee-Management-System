@@ -1,9 +1,9 @@
 # Employee_Management_System_SQL
 
-## Description:
+## Description
 Developers frequently have to create interfaces that allow non-developers to easily view and interact with information stored in databases. These interfaces are called content management systems (CMS). This is a command-line application to manage a company's employee database, using Node.js, Inquirer, and MySQL.
 
-## Criteria:
+## Criteria
 * By starting the application, you're presented with the following options: view all departments, view all roles, view all employees, add a department, add a role, add an employee, and update an employee role
 * By choosing to view all departments, you're presented with a formatted table showing department names and department ids
 * By choosing to view all roles, you're presented with the job title, role id, the department that role belongs to, and the salary for that role
@@ -28,6 +28,6 @@ Developers frequently have to create interfaces that allow non-developers to eas
 ## Usage
 * This application will allow users to view, add, and edit a company's employee database using MySQL queries
 
-## Link:
+## Link
 
 [Video Demo](https://drive.google.com/file/d/16J3CRu0T3zjjFzNIAPw9xcwEvByiC6m2/view)
